@@ -1,11 +1,12 @@
 export default async function handler(req, res) {
-    const API_KEY = process.env.PRINTIFY_API_KEY; // Add API key securely
+    const API_KEY = process.env.PRINTIFY_API_KEY; // Your API key stored securely
     const PRINTIFY_BASE_URL = 'https://api.printify.com/v1';
+    const SHOP_ID = '16553509'; // Your store ID
 
     if (req.method === 'GET') {
         try {
-            // Replace `{shop_id}` with your shop ID from Printify
-            const response = await fetch(`${PRINTIFY_BASE_URL}/shops/{shop_id}/products.json`, {
+            // Fetch products from the Printify API
+            const response = await fetch(`${PRINTIFY_BASE_URL}/shops/${SHOP_ID}/products.json`, {
                 headers: {
                     'Authorization': `Bearer ${API_KEY}`,
                 },
@@ -16,7 +17,7 @@ export default async function handler(req, res) {
             }
 
             const data = await response.json();
-            res.status(200).json(data); // Send data to the frontend
+            res.status(200).json(data); // Return product data to the frontend
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

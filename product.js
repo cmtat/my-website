@@ -1,6 +1,6 @@
 const productContainer = document.getElementById("product-container");
 const storeId = "19227751"; // Replace with your actual Printify store ID
-const apiKey = "YOUR_API_KEY_HERE"; // Replace with your actual API key
+const apiKey = process.env.PRINTIFY_API_KEY;
 
 async function fetchProducts() {
     try {

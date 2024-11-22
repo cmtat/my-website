@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
     const API_KEY = process.env.PRINTIFY_API_KEY; // Your API key stored securely
     const PRINTIFY_BASE_URL = 'https://api.printify.com/v1';
-    const SHOP_ID = '16553509'; // Your store ID
+    const SHOP_ID = '19227751'; // Your store ID
 
     if (req.method === 'GET') {
         try {

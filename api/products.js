@@ -2,7 +2,7 @@ const productDetails = document.getElementById("product-details");
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
 const storeId = "16553509"; // Replace with your actual Printify store ID
-const apiKey = "YOUR_API_KEY_HERE"; // Replace with your actual API key
+const apiKey = process.env.PRINTIFY_API_KEY;
 
 async function fetchProductDetails() {
     try {

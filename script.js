@@ -1,31 +1,105 @@
-// Function to fetch product data from your API
+// Global cart stored in localStorage
+const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+// Fetch products from API
 async function fetchProducts() {
-    try {
-        const response = await fetch('/api/products'); // Fetch data from your API
-        if (!response.ok) {
-            throw new Error('Failed to fetch products');
-        }
-        const products = await response.json();
-        renderProducts(products.data); // Pass the data array to render function
-    } catch (error) {
-        console.error('Error:', error);
-    }
+    const response = await fetch('/api/products');
+    const { data: products } = await response.json();
+    renderProductList(products);
 }
 
-// Function to render products dynamically on the webpage
-function renderProducts(products) {
+// Render product listing
+function renderProductList(products) {
     const container = document.getElementById('products-container');
-    products.forEach((product) => {
+    products.forEach(product => {
         const productDiv = document.createElement('div');
         productDiv.innerHTML = `
             <h2>${product.title}</h2>
-            <img src="${product.images[0].src}" alt="${product.title}" style="width: 300px; height: auto;">
-            <p>${product.description}</p>
+            <img src="${product.images[0].src}" alt="${product.title}" width="200">
             <p>Price: $${(product.variants[0].price / 100).toFixed(2)}</p>
+            <a href="./product.html?id=${product.id}">View Details</a>
         `;
         container.appendChild(productDiv);
     });
 }
 
-// Call the fetchProducts function to display the products
-fetchProducts();
+// Render product details
+async function renderProductDetails() {
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+    const response = await fetch('/api/products');
+    const { data: products } = await response.json();
+    const product = products.find(p => p.id === productId);
+
+    const container = document.getElementById('product-details');
+    container.innerHTML = `
+        <h2>${product.title}</h2>
+        <img src="${product.images[0].src}" alt="${product.title}" width="300">
+        <p>${product.description}</p>
+        <p>Price: $${(product.variants[0].price / 100).toFixed(2)}</p>
+    `;
+
+    document.getElementById('add-to-cart').addEventListener('click', () => {
+        addToCart(product);
+    });
+}
+
+// Add product to cart
+function addToCart(product) {
+    cart.push(product);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert('Product added to cart!');
+}
+
+// Render shopping cart
+function renderCart() {
+    const container = document.getElementById('cart-container');
+    if (cart.length === 0) {
+        container.innerHTML = '<p>Your cart is empty.</p>';
+        return;
+    }
+
+    cart.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.innerHTML = `
+            <h2>${item.title}</h2>
+            <img src="${item.images[0].src}" alt="${item.title}" width="200">
+            <p>Price: $${(item.variants[0].price / 100).toFixed(2)}</p>
+        `;
+        container.appendChild(itemDiv);
+    });
+
+    setupPayPalButton();
+}
+
+// PayPal Integration
+function setupPayPalButton() {
+    paypal.Buttons({
+        createOrder: function (data, actions) {
+            const total = cart.reduce((sum, item) => sum + (item.variants[0].price / 100), 0).toFixed(2);
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: total
+                    }
+                }]
+            });
+        },
+        onApprove: function (data, actions) {
+            return actions.order.capture().then(function (details) {
+                alert('Transaction completed by ' + details.payer.name.given_name);
+                localStorage.removeItem('cart'); // Clear cart
+                window.location.href = './index.html';
+            });
+        }
+    }).render('#paypal-button-container');
+}
+
+// Page-specific actions
+if (window.location.pathname.endsWith('index.html')) {
+    fetchProducts();
+} else if (window.location.pathname.endsWith('product.html')) {
+    renderProductDetails();
+} else if (window.location.pathname.endsWith('cart.html')) {
+    renderCart();
+}

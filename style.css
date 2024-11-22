@@ -1,55 +1,11 @@
-/* General Styling */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f8f9fa;
-    color: #333;
-}
-
-header {
-    text-align: center;
-    background: linear-gradient(to bottom, #007bff, #0056b3);
-    color: white;
-    padding: 20px 10px;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2.5rem;
-}
-
-header p {
-    margin-top: 10px;
-    font-size: 1.2rem;
-}
-
-main {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-h2 {
-    text-align: center;
-    color: #0056b3;
-    font-size: 2rem;
-    margin-bottom: 20px;
-}
-
-/* Products Grid */
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-}
-
+/* Add styles for clickable product cards */
 .product-card {
-    background-color: white;
+    text-align: center;
     border: 1px solid #ddd;
     border-radius: 10px;
+    background: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 15px;
+    padding: 10px;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -60,30 +16,24 @@ h2 {
 
 .product-card img {
     max-width: 100%;
+    height: auto;
     border-radius: 10px;
 }
 
 .product-card h3 {
-    color: #0056b3;
-    font-size: 1.2rem;
     margin: 10px 0;
-}
-
-.product-card p {
-    margin: 5px 0;
+    font-size: 1.2rem;
+    color: #0056b3;
 }
 
 .product-price {
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: #28a745;
 }
 
-footer {
-    text-align: center;
-    background-color: #0056b3;
-    color: white;
-    padding: 10px 0;
-    margin-top: 20px;
-    font-size: 0.9rem;
+#product-details img {
+    max-width: 400px;
+    height: auto;
+    margin-bottom: 20px;
 }

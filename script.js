@@ -22,10 +22,11 @@ function renderProductList(products) {
         const productDiv = document.createElement('div');
         productDiv.classList.add('product-card');
         productDiv.innerHTML = `
-            <img src="${product.images[0]?.src}" alt="${product.title}">
-            <h3>${product.title}</h3>
-            <p>${product.description}</p>
-            <p class="product-price">Price: $${(product.variants[0]?.price / 100).toFixed(2)}</p>
+            <a href="product.html?id=${product.id}">
+                <img src="${product.images[0]?.src}" alt="${product.title}">
+                <h3>${product.title}</h3>
+                <p class="product-price">Price: $${(product.variants[0]?.price / 100).toFixed(2)}</p>
+            </a>
         `;
         container.appendChild(productDiv);
     });

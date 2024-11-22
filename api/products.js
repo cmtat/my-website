@@ -1,41 +1,23 @@
-const productDetails = document.getElementById("product-details");
-const params = new URLSearchParams(window.location.search);
-const productId = params.get("id");
-const storeId = "19227751"; // Replace with your actual Printify store ID
-const apiKey = process.env.PRINTIFY_API_KEY;
+export default async function handler(req, res) {
+    const apiKey = "YOUR_API_KEY"; // Replace with your actual API key
+    const shopId = "16553509"; // Replace with your actual shop ID
 
-async function fetchProductDetails() {
     try {
-        const response = await fetch(`https://api.printify.com/v1/shops/${storeId}/products/${productId}.json`, {
+        const response = await fetch(`https://api.printify.com/v1/shops/${shopId}/products.json`, {
+            method: "GET",
             headers: {
-                Authorization: `Bearer ${apiKey}`
-            }
+                Authorization: `Bearer ${apiKey}`,
+            },
         });
-        const product = await response.json();
-        displayProductDetails(product);
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch products");
+        }
+
+        const data = await response.json();
+        res.status(200).json(data);
     } catch (error) {
-        console.error("Error fetching product details:", error);
+        console.error("Error fetching products:", error);
+        res.status(500).json({ error: "Failed to fetch products" });
     }
 }
-
-function displayProductDetails(product) {
-    const variants = product.variants
-        .map(variant => `<option value="${variant.id}">${variant.title} - $${(variant.price / 100).toFixed(2)}</option>`)
-        .join("");
-    
-    productDetails.innerHTML = `
-        <div class="product-card">
-            <img src="${product.images[0].src}" alt="${product.title}">
-            <h2>${product.title}</h2>
-            <p>${product.description}</p>
-            <select id="variant-selector">${variants}</select>
-            <button onclick="addToCart()">Add to Cart</button>
-        </div>
-    `;
-}
-
-function addToCart() {
-    alert("Add to Cart functionality coming soon!");
-}
-
-fetchProductDetails();

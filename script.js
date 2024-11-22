@@ -6,7 +6,7 @@ async function fetchProducts() {
             throw new Error('Failed to fetch products');
         }
 
-        const { data: products } = await response.json(); // Adjust according to your JSON structure
+        const { data: products } = await response.json();
         renderProductList(products);
     } catch (error) {
         console.error('Error fetching products:', error);
@@ -16,15 +16,16 @@ async function fetchProducts() {
 // Render product listing
 function renderProductList(products) {
     const container = document.getElementById('products-container');
-    container.innerHTML = ''; // Clear container before adding products
+    container.innerHTML = '';
 
     products.forEach((product) => {
         const productDiv = document.createElement('div');
+        productDiv.classList.add('product-card');
         productDiv.innerHTML = `
-            <h2>${product.title}</h2>
-            <img src="${product.images[0]?.src}" alt="${product.title}" style="width: 300px; height: auto;">
+            <img src="${product.images[0]?.src}" alt="${product.title}">
+            <h3>${product.title}</h3>
             <p>${product.description}</p>
-            <p>Price: $${(product.variants[0]?.price / 100).toFixed(2)}</p>
+            <p class="product-price">Price: $${(product.variants[0]?.price / 100).toFixed(2)}</p>
         `;
         container.appendChild(productDiv);
     });

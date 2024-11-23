@@ -8,10 +8,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   try {
-    const response = await fetch(`/api/products?id=${productId}`);
-    if (!response.ok) throw new Error('Failed to fetch product');
+    // Fetch all products
+    const response = await fetch('/api/products');
+    if (!response.ok) throw new Error('Failed to fetch products');
 
-    const product = await response.json();
+    const products = await response.json();
+
+    // Find the specific product by ID
+    const product = products.data.find((p) => p.id === productId);
+
+    if (!product) {
+      document.getElementById('product-details').innerHTML = `<p>Product not found.</p>`;
+      return;
+    }
 
     // Build product details
     const productDetails = `

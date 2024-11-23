@@ -1,0 +1,8 @@
+{
+  "name": "my-store",
+  "version": "1.0.0",
+  "main": "api/products.js",
+  "dependencies": {
+    "node-fetch": "^3.0.0"
+  }
+}

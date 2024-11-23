@@ -1,18 +1,17 @@
-const apiKey = process.env.PRINTIFY_API_KEY; // Securely references the API key from Vercel
-const shopId = "16553509"; // Your shop ID
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get('id');
+  const productDetails = document.getElementById('product-details');
 
-export async function fetchProduct(productId) {
-    const productURL = `https://api.printify.com/v1/shops/${shopId}/products/${productId}.json`;
-    try {
-        const response = await fetch(productURL, {
-            headers: {
-                Authorization: `Bearer ${apiKey}`,
-            },
-        });
-        const data = await response.json();
-        return data; // Return the detailed product data
-    } catch (error) {
-        console.error("Error fetching product details:", error);
-        return null;
-    }
-}
+  fetch(`/api/products?id=${productId}`)
+    .then(response => response.json())
+    .then(product => {
+      productDetails.innerHTML = `
+        <h1>${product.title}</h1>
+        <img src="${product.images[0].src}" alt="${product.title}">
+        <p>${product.description}</p>
+        <p>Price: $${(product.variants[0].price / 100).toFixed(2)}</p>
+      `;
+    })
+    .catch(error => console.error('Error fetching product details:', error));
+});

@@ -1,15 +1,14 @@
-const Printify = require("printify-api");
-
 export default async function handler(req, res) {
-  try {
-    // Initialize Printify client with your API key
-    const client = new Printify(process.env.PRINTIFY_API_KEY);
+  const response = await fetch('https://api.printify.com/v1/shops/YOUR_SHOP_ID/products.json', {
+    headers: {
+      Authorization: `Bearer ${process.env.PRINTIFY_API_KEY}`
+    }
+  });
 
-    // Fetch products from your Printify store
-    const products = await client.catalog.products.list();
-    res.status(200).json(products);
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    res.status(500).json({ error: "Failed to fetch products" });
+  if (!response.ok) {
+    return res.status(response.status).json({ error: 'Failed to fetch products' });
   }
+
+  const data = await response.json();
+  res.status(200).json(data);
 }

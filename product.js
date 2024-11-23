@@ -13,13 +13,40 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const product = await response.json();
 
-    document.getElementById('product-details').innerHTML = `
+    // Build product details HTML
+    const productDetails = `
       <h2>${product.title}</h2>
-      <img src="${product.images[0]?.src}" alt="${product.title}">
+      <div class="image-gallery">
+        ${product.images
+          .map(
+            (image, index) =>
+              `<img src="${image.src}" alt="${product.title} - Image ${index + 1}" class="gallery-image">`
+          )
+          .join('')}
+      </div>
       <p>${product.description}</p>
       <p>Price: $${(product.variants[0].price / 100).toFixed(2)}</p>
       <button>Add to Cart</button>
     `;
+
+    document.getElementById('product-details').innerHTML = productDetails;
+
+    // Add click-to-enlarge functionality (optional)
+    const galleryImages = document.querySelectorAll('.gallery-image');
+    galleryImages.forEach((img) => {
+      img.addEventListener('click', () => {
+        const enlargedImage = document.createElement('div');
+        enlargedImage.classList.add('enlarged-image');
+        enlargedImage.innerHTML = `<img src="${img.src}" alt="${img.alt}">
+          <button class="close-button">Close</button>`;
+        document.body.appendChild(enlargedImage);
+
+        // Close functionality
+        document.querySelector('.close-button').addEventListener('click', () => {
+          document.body.removeChild(enlargedImage);
+        });
+      });
+    });
   } catch (error) {
     console.error('Error loading product details:', error);
     document.getElementById('product-details').innerHTML = `<p>Error loading product details.</p>`;

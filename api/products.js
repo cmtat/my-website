@@ -1,18 +1,15 @@
-const apiKey = process.env.PRINTIFY_API_KEY; // Securely references the API key from Vercel
-const shopId = "16553509"; // Your shop ID
-const baseURL = `https://api.printify.com/v1/shops/${shopId}/products.json`;
+const Printify = require("printify-api");
 
-export async function fetchProducts() {
-    try {
-        const response = await fetch(baseURL, {
-            headers: {
-                Authorization: `Bearer ${apiKey}`,
-            },
-        });
-        const data = await response.json();
-        return data.data; // Return the array of products
-    } catch (error) {
-        console.error("Error fetching products:", error);
-        return [];
-    }
+export default async function handler(req, res) {
+  try {
+    // Initialize Printify client with your API key
+    const client = new Printify(process.env.PRINTIFY_API_KEY);
+
+    // Fetch products from your Printify store
+    const products = await client.catalog.products.list();
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
 }

@@ -13,9 +13,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const product = await response.json();
 
-    // Build product details HTML
+    // Build product details
     const productDetails = `
       <h2>${product.title}</h2>
+      <div class="main-image">
+        <img src="${product.images[0].src}" alt="${product.title}">
+      </div>
       <div class="image-gallery">
         ${product.images
           .map(
@@ -25,11 +28,23 @@ document.addEventListener('DOMContentLoaded', async () => {
           .join('')}
       </div>
       <p>${product.description}</p>
-      <p>Price: $${(product.variants[0].price / 100).toFixed(2)}</p>
-      <button>Add to Cart</button>
+      <p class="price">Price: $${(product.variants[0].price / 100).toFixed(2)}</p>
+      <div class="options">
+        <button>Add to Cart</button>
+      </div>
     `;
 
     document.getElementById('product-details').innerHTML = productDetails;
+
+    // Add click-to-main-image functionality
+    const galleryImages = document.querySelectorAll('.gallery-image');
+    const mainImage = document.querySelector('.main-image img');
+
+    galleryImages.forEach((img) => {
+      img.addEventListener('click', () => {
+        mainImage.src = img.src;
+      });
+    });
   } catch (error) {
     console.error('Error loading product details:', error);
     document.getElementById('product-details').innerHTML = `<p>Error loading product details.</p>`;
